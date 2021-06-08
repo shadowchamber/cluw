@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,6 +49,8 @@ namespace cluw.Wrappers
         public async Task<CommandResult> PublishAsync(string projectFile, string publishdir)
         {
             string command = "publish";
+
+            Directory.CreateDirectory(publishdir);
 
             string app = string.IsNullOrEmpty(DotNetExecutable) ? "dotnet" : DotNetExecutable;
 

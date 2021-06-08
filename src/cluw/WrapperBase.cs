@@ -49,48 +49,79 @@
         public async Task<CommandResult> RunCommandAsync(string command, string arguments = "")
         {
             Console.WriteLine("Exec: {0} {1}", command, arguments);
+            var cres = new CommandResult();
 
-            using (PowerShell PowerShellInst = PowerShell.Create())
+            try
             {
-                PowerShellInst.AddScript(command + " " + arguments);
-                PSDataCollection<PSObject> PSOutput = await PowerShellInst.InvokeAsync().ConfigureAwait(false);
-
-                List<string> res = new List<string>();
-
-                foreach (PSObject obj in PSOutput)
+                using (PowerShell PowerShellInst = PowerShell.Create())
                 {
-                    if (obj != null)
+                    PowerShellInst.AddScript("Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted");
+                    PowerShellInst.AddScript(command + " " + arguments);
+                    PSDataCollection<PSObject> PSOutput = await PowerShellInst.InvokeAsync().ConfigureAwait(false);
+
+                    List<string> res = new List<string>();
+
+                    foreach (PSObject obj in PSOutput)
                     {
-                        res.Add(obj.ToString());
-                    }
-                }
-
-                bool bres = PowerShellInst.HadErrors;
-
-                var cres = new CommandResult();
-
-                cres.Output = res;
-                cres.HadErrors = bres;
-
-                if (PowerShellInst.HadErrors)
-                {
-                    try
-                    {
-                        var errors = PowerShellInst.Streams.Error.ReadAll();
-
-                        foreach (var error in errors)
+                        if (obj != null)
                         {
-                            Console.WriteLine("Error: " + error.ErrorDetails.ToString());
+                            res.Add(obj.ToString());
                         }
                     }
-                    catch (Exception exception)
+
+                    bool bres = PowerShellInst.HadErrors;
+
+                    cres.Output = res;
+                    cres.HadErrors = bres;
+
+                    if (PowerShellInst.HadErrors)
                     {
-                        Console.WriteLine(exception.Message + " " + exception.StackTrace);
+                        try
+                        {
+                            var errors = PowerShellInst.Streams.Error.ReadAll();
+
+                            if (errors != null)
+                            {
+                                bool foundErrors = false;
+
+                                foreach (var error in errors)
+                                {
+                                    Console.WriteLine("Error: " + error.ToString());
+
+                                    if (error.ToString().ToLower().Contains("error"))
+                                    {
+                                        foundErrors = true;
+                                    }
+                                }
+
+                                if (!foundErrors)
+                                {
+                                    cres.HadErrors = false;
+                                }
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception.Message + " " + exception.StackTrace);
+                        }
                     }
                 }
-
-                return cres;
             }
+            catch (Exception exception)
+            {
+                var ceres = new CommandResult();
+
+                ceres.Output = new List<string>();
+
+                ceres.Output.Add(exception.Message);
+                ceres.Output.Add(exception.StackTrace);
+
+                ceres.HadErrors = true;
+
+                return ceres;
+            }
+
+            return cres;
 
             //ProcessStartInfo startInfo = new ProcessStartInfo()
             //{
