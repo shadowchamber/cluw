@@ -10,6 +10,14 @@
     {
         public string CommandOutput { get; set; }
         public string CommandErrors { get; set; }
+        public string WorkingDirectory { get; set; }
+
+        public WrapperBase WithWorkingDirectory(string workingDirectory)
+        {
+            this.WorkingDirectory = workingDirectory;
+
+            return this;
+        }
 
         public void RunCommandNoRedirect(string command, string arguments = "")
         {
@@ -20,7 +28,8 @@
                 RedirectStandardOutput = false,
                 RedirectStandardError = false,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                WorkingDirectory = WorkingDirectory
             };
 
             Console.WriteLine("Exec: {0} {1}", command, arguments);
