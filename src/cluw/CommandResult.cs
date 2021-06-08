@@ -28,5 +28,15 @@ namespace cluw
 
             return this.HadErrors;
         }
+
+        public bool ShowNoWarnReturnHadErrors()
+        {
+            foreach (var line in Output.Where(i => !i.ToLower().Contains("warning")))
+            {
+                Console.WriteLine(line);
+            }
+
+            return this.HadErrors;
+        }
     }
 }
