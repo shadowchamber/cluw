@@ -74,11 +74,18 @@
 
                 if (PowerShellInst.HadErrors)
                 {
-                    var errors = PowerShellInst.Streams.Error.ReadAll();
-
-                    foreach (var error in errors)
+                    try
                     {
-                        Console.WriteLine("Error: " + error.ErrorDetails.ToString());
+                        var errors = PowerShellInst.Streams.Error.ReadAll();
+
+                        foreach (var error in errors)
+                        {
+                            Console.WriteLine("Error: " + error.ErrorDetails.ToString());
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message + " " + exception.StackTrace);
                     }
                 }
 
