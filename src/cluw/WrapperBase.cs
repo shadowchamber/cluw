@@ -72,6 +72,16 @@
                 cres.Output = res;
                 cres.HadErrors = bres;
 
+                if (PowerShellInst.HadErrors)
+                {
+                    var errors = PowerShellInst.Streams.Error.ReadAll();
+
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine(error.ErrorDetails.ToString());
+                    }
+                }
+
                 return cres;
             }
 
