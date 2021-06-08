@@ -78,7 +78,7 @@
 
                     foreach (var error in errors)
                     {
-                        Console.WriteLine(error.ErrorDetails.ToString());
+                        Console.WriteLine("Error: " + error.ErrorDetails.ToString());
                     }
                 }
 
