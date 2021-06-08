@@ -45,7 +45,7 @@ namespace cluw.Wrappers
             return await this.RunCommandAsync(app, args).ConfigureAwait(false);
         }
 
-        public async Task<CommandResult> PublishAsync(string projectFile)
+        public async Task<CommandResult> PublishAsync(string projectFile, string publishdir)
         {
             string command = "publish";
 
@@ -54,6 +54,7 @@ namespace cluw.Wrappers
             command += (string.IsNullOrEmpty(Configuration) ? "" : " --configuration " + Configuration);
             command += (string.IsNullOrEmpty(RunTime) ? "" : " --runtime " + RunTime);
             command += (string.IsNullOrEmpty(projectFile) ? "" : " " + projectFile);
+            command += (string.IsNullOrEmpty(publishdir) ? "" : " /p:PublishDir=\"" + publishdir + "\"");
 
             return await this.RunCommandAsync(app, command).ConfigureAwait(false);
         }
