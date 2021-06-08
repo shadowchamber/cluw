@@ -48,6 +48,8 @@
 
         public async Task<CommandResult> RunCommandAsync(string command, string arguments = "")
         {
+            Console.WriteLine("Exec: {0} {1}", command, arguments);
+
             using (PowerShell PowerShellInst = PowerShell.Create())
             {
                 PowerShellInst.AddScript(command + " " + arguments);
