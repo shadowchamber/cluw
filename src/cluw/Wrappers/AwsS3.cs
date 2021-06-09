@@ -10,7 +10,7 @@ namespace cluw.Wrappers
     {
         public async Task<CommandResult> Copy(string from, string to)
         {
-            return await this.RunCommandAsync($"cmd /c \"aws --region us-east-1 s3 cp \"{from}\" \"{to}\"").ConfigureAwait(false);
+            return await this.RunCommandAsync($"cmd /c aws --region us-east-1 s3 cp \"{from}\" \"{to}\"").ConfigureAwait(false);
         }
     }
 }
